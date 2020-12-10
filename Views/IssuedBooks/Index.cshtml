@@ -1,0 +1,86 @@
+﻿@model IEnumerable<LibraryManagementSystem.Models.IssuedBook>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DateFrom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReturnDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Customer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateFrom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateTo)
+                </td>
+                <td>
+                    @if (item.ReturnDate.HasValue && item.ReturnDate > item.DateTo)
+                    {
+                        <span style="color:red;">
+                            @Html.DisplayFor(modelItem => item.ReturnDate)
+                        </span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.ReturnDate)
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Customer.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Book.Name)
+                </td>
+                <td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        if (item.ReturnDate.HasValue)
+                        {
+                            @Html.ActionLink("Details", "Details", new { id = item.IssuedBookId })
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Edit", "Edit", new { id = item.IssuedBookId }) @:|
+                            @Html.ActionLink("Details", "Details", new { id = item.IssuedBookId }) @:|
+                            @Html.ActionLink("Delete", "Delete", new { id = item.IssuedBookId })
+                        }
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Details", "Details", new { id = item.IssuedBookId })
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
